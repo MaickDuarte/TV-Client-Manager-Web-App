@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TV Client Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-mark"><i class="fa-solid fa-tv"></i></div>
+          <div class="brand-copy">
+            <strong>TV Manager</strong>
+            <span>Clientes IPTV</span>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="Navegacao principal">
+          <button class="nav-link active" data-route="dashboard" type="button">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+          </button>
+          <button class="nav-link" data-route="clients" type="button">
+            <i class="fa-solid fa-users"></i>
+            <span>Clientes</span>
+          </button>
+          <button class="nav-link" data-route="servers" type="button">
+            <i class="fa-solid fa-server"></i>
+            <span>Servidores</span>
+          </button>
+          <button class="nav-link" data-route="billing" type="button">
+            <i class="fa-solid fa-comments-dollar"></i>
+            <span>Cobrancas</span>
+          </button>
+        </nav>
+
+        <button class="collapse-btn" id="toggleSidebar" type="button" aria-label="Recolher menu">
+          <i class="fa-solid fa-angles-left"></i>
+          <span>Recolher</span>
+        </button>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button class="icon-btn menu-btn" id="mobileMenu" type="button" aria-label="Abrir menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <p class="eyebrow">Operacao local</p>
+            <h1 id="pageTitle">Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-btn" id="seedDataBtn" type="button">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Dados exemplo</span>
+            </button>
+            <button class="ghost-btn danger" id="clearDataBtn" type="button">
+              <i class="fa-solid fa-trash"></i>
+              <span>Limpar</span>
+            </button>
+          </div>
+        </header>
+
+        <section class="view active" id="dashboardView" data-title="Dashboard">
+          <div class="summary-grid" id="summaryCards"></div>
+          <div class="content-grid two-columns">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Cobrancas proximas</h2>
+                  <p>Clientes com pagamento em ate 3 dias.</p>
+                </div>
+                <i class="fa-solid fa-bell"></i>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Pagamento</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardBillingAlerts"></tbody>
+                </table>
+              </div>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Vencimento interno</h2>
+                  <p>Renovacoes de sistema em ate 7 dias.</p>
+                </div>
+                <i class="fa-solid fa-calendar-days"></i>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Vencimento</th>
+                      <th>Urgencia</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardInternalAlerts"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="clientsView" data-title="Clientes">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2 id="clientFormTitle">Novo cliente</h2>
+                <p>Cadastro completo do assinante e datas de controle.</p>
+              </div>
+              <button class="secondary-btn hidden" id="cancelClientEdit" type="button">
+                <i class="fa-solid fa-xmark"></i>
+                <span>Cancelar edicao</span>
+              </button>
+            </div>
+            <form class="form-grid" id="clientForm">
+              <input type="hidden" id="clientId">
+              <label>Nome<input id="clientName" type="text" required placeholder="Nome do cliente"></label>
+              <label>Telefone WhatsApp<input id="clientPhone" type="tel" placeholder="5599999999999"></label>
+              <label>Servidor<select id="clientServer" required></select></label>
+              <label>Aplicativo<input id="clientApp" type="text" placeholder="Smart IPTV, XCIPTV..."></label>
+              <label>Login<input id="clientLogin" type="text" placeholder="usuario"></label>
+              <label>Senha<input id="clientPassword" type="text" placeholder="senha"></label>
+              <label>Valor do Plano<input id="clientPlanValue" type="number" min="0" step="0.01" required placeholder="0,00"></label>
+              <label>Situacao
+                <select id="clientStatus">
+                  <option>Ativo</option>
+                  <option>Vencido</option>
+                  <option>Suspenso</option>
+                  <option>Pago</option>
+                </select>
+              </label>
+              <label>Data de Pagamento<input id="clientPaymentDate" type="date" required></label>
+              <label>Data de Vencimento Interna<input id="clientInternalDueDate" type="date" required></label>
+              <div class="form-actions">
+                <button class="primary-btn" type="submit">
+                  <i class="fa-solid fa-floppy-disk"></i>
+                  <span>Salvar cliente</span>
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="list-toolbar">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="clientSearch" type="search" placeholder="Buscar cliente, telefone, login...">
+              </div>
+              <select id="clientStatusFilter" aria-label="Filtrar situacao">
+                <option value="">Todas situacoes</option>
+                <option>Ativo</option>
+                <option>Vencido</option>
+                <option>Suspenso</option>
+                <option>Pago</option>
+              </select>
+              <select id="clientSort" aria-label="Ordenar clientes">
+                <option value="name">Nome</option>
+                <option value="paymentDate">Pagamento</option>
+                <option value="internalDueDate">Vencimento interno</option>
+                <option value="status">Situacao</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Servidor</th>
+                    <th>Plano</th>
+                    <th>Pagamento</th>
+                    <th>Interno</th>
+                    <th>Situacao</th>
+                    <th>Acoes</th>
+                  </tr>
+                </thead>
+                <tbody id="clientsTable"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="serversView" data-title="Servidores">
+          <div class="content-grid server-layout">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 id="serverFormTitle">Novo servidor</h2>
+                  <p>Cadastre os provedores disponiveis para os clientes.</p>
+                </div>
+              </div>
+              <form class="stack-form" id="serverForm">
+                <input type="hidden" id="serverId">
+                <label>Nome do servidor<input id="serverName" type="text" required placeholder="Servidor Premium"></label>
+                <label>URL ou endereco<input id="serverUrl" type="text" placeholder="https://servidor.exemplo"></label>
+                <label>Observacoes<textarea id="serverNotes" rows="5" placeholder="Notas, painel, contatos..."></textarea></label>
+                <div class="form-actions split">
+                  <button class="secondary-btn hidden" id="cancelServerEdit" type="button">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Cancelar</span>
+                  </button>
+                  <button class="primary-btn" type="submit">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Salvar servidor</span>
+                  </button>
+                </div>
+              </form>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Servidores cadastrados</h2>
+                  <p>Edite ou remova servidores sem perder clientes ja vinculados.</p>
+                </div>
+              </div>
+              <div class="server-list" id="serversList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="billingView" data-title="Cobrancas">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Cobrancas proximas</h2>
+                <p>Gere mensagens prontas para WhatsApp para pagamentos em ate 3 dias.</p>
+              </div>
+            </div>
+            <div class="billing-list" id="billingList"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
